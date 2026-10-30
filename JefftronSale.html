@@ -490,7 +490,7 @@ async function boot() {
   $('#fine').textContent = 'No payment now. Payment is due by ' + (DATA.paydue || 'the date on your invoice') + '. Postage is a flat ' + money(DATA.postage) + ', sent express with tracking. Delivery: ' + DATA.delivery + '. This is not drop shipping: we receive, confirm and express ship your items personally. Australia only. Your details are only used for your order and never sold (see Privacy below). Warranty covers manufacturing defects only, and you must read the manufacturer\'s manual before installing (see Terms & warranty below).';
   $('#app').hidden = false;
   const skew = DATA.now - Date.now();
-  const left = ms => { let s = Math.max(0, Math.floor(ms / 1000)); const d = Math.floor(s / 86400); s -= d * 86400; const h = Math.floor(s / 3600); s -= h * 3600; const m = Math.floor(s / 60); if (d >= 1) return d + (d === 1 ? ' day' : ' days'); return h ? h + (h === 1 ? ' hour ' : ' hours ') + m + ' min' : m + ' min'; };
+  const left = ms => { let s = Math.max(0, Math.floor(ms / 1000)); const d = Math.floor(s / 86400); s -= d * 86400; const h = Math.floor(s / 3600); s -= h * 3600; const m = Math.floor(s / 60); if (d >= 1) return d + (d === 1 ? ' day ' : ' days ') + h + (h === 1 ? ' hour' : ' hours'); return h ? h + (h === 1 ? ' hour ' : ' hours ') + m + ' min' : m + ' min'; };
   if (DATA.state === 'before') {
     const tick = () => { $('#count').hidden = false; $('#count').textContent = 'Opens in ' + left(DATA.opens - (Date.now() + skew)); if (DATA.opens - (Date.now() + skew) <= 0) location.reload(); };
     tick(); setInterval(tick, 30000);
