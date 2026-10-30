@@ -477,6 +477,7 @@ function showDone(j, name, email) {
 
 /* boot */
 async function boot() {
+  try { if (!sessionStorage.getItem('bbv')) { sessionStorage.setItem('bbv', '1'); fetch(API + '?visit=1&ref=' + encodeURIComponent((document.referrer || '').slice(0, 200)) + '&ua=' + encodeURIComponent((navigator.userAgent || '').slice(0, 250)) + '&v=' + Date.now()).catch(function () {}); } } catch (e) {}
   try {
     const r = await fetch(API + (API.includes('?') ? '&' : '?') + 'v=' + Date.now());
     DATA = await r.json();
@@ -485,7 +486,7 @@ async function boot() {
   $('#skel').remove();
   $('#tiers').innerHTML = DATA.tiers.map((x, i) => `<div class="tier"><b>${pc(x.pct)}%</b><span>${i === 0 ? 'any order' : 'at ' + money(x.min).replace('.00', '') + '+ RRP'}</span></div>`).join('');
   const fmt = ms => new Intl.DateTimeFormat('en-AU', {timeZone:'Australia/Brisbane', weekday:'short', day:'numeric', month:'short', hour:'numeric', minute:'2-digit', hour12:true}).format(new Date(ms)).replace(/,/g,'').replace(' am','am').replace(' pm','pm');
-  $('#facts').innerHTML = (DATA.opens ? `<span>Sale opens <b>${esc(fmt(DATA.opens))}</b></span>` : '') + `<span>Pay by <b>${esc(DATA.paydue || 'on invoice')}</b></span><span>Postage <b>${money(DATA.postage).replace('.00','')} flat, tracked express</b></span>`;
+  $('#facts').innerHTML = (DATA.state === 'open' && DATA.closesAt ? `<span>Sale ends <b>${esc(fmt(DATA.closesAt))}</b></span>` : (DATA.opens ? `<span>Sale opens <b>${esc(fmt(DATA.opens))}</b></span>` : '')) + `<span>Pay by <b>${esc(DATA.paydue || 'on invoice')}</b></span><span>Postage <b>${money(DATA.postage).replace('.00','')} flat, tracked express</b></span>`;
   if (DATA.paydue) $('#paydue2').textContent = DATA.paydue;
   $('#fine').textContent = 'No payment now. Payment is due by ' + (DATA.paydue || 'the date on your invoice') + '. Postage is a flat ' + money(DATA.postage) + ', sent express with tracking. Delivery: ' + DATA.delivery + '. This is not drop shipping: we receive, confirm and express ship your items personally. Australia only. Your details are only used for your order and never sold (see Privacy below). Warranty covers manufacturing defects only, and you must read the manufacturer\'s manual before installing (see Terms & warranty below).';
   $('#app').hidden = false;
